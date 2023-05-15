@@ -4,30 +4,30 @@ import argparse
 import re
 import urllib.request
 
-def extract_links_from_url(url, regex_pattern):
+def extract_links_from_file(file_path, regex_pattern):
     try:
-        response = urllib.request.urlopen(url)
-        html_content = response.read().decode('utf-8')
-        links = re.findall(regex_pattern, html_content)
-        return links
+        with open(file_path, 'r') as file:
+            file_content = file.read()
+            links = re.findall(regex_pattern, file_content)
+            return links
     except Exception as e:
         print(f"An error occurred: {e}")
         return []
 
-def parse_urls(input_file, output_file, regex_pattern):
+def parse_files(input_file, output_file, regex_pattern):
     with open(input_file, 'r') as file:
-        urls = file.readlines()
+        file_paths = file.readlines()
 
     with open(output_file, 'w') as file:
-        for url in urls:
-            url = url.strip()
-            found_links = extract_links_from_url(url, regex_pattern)
+        for file_path in file_paths:
+            file_path = file_path.strip()
+            found_links = extract_links_from_file(file_path, regex_pattern)
             for link in found_links:
                 file.write(link + '\n')
 
 # Создаем парсер аргументов командной строки
-parser = argparse.ArgumentParser(description='URL Parser')
-parser.add_argument('-i', '--input', type=str, help='Input file containing URLs')
+parser = argparse.ArgumentParser(description='JavaScript File Parser')
+parser.add_argument('-i', '--input', type=str, help='Input file containing file paths')
 args = parser.parse_args()
 
 # Проверяем наличие аргумента -i
@@ -38,4 +38,4 @@ else:
     output_file = "output.txt"
     regex_pattern = r"s3\.amazonaws\.com|storage\.googleapis\.com|blob\.core\.windows\.net"
 
-    parse_urls(input_file, output_file, regex_pattern)
+    parse_files(input_file, output_file, regex_pattern)
