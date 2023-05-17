@@ -1,5 +1,3 @@
-# python3 sliceurl.py -i input.txt -o output.txt
-
 import argparse
 from urllib.parse import urlparse
 
@@ -69,7 +67,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='URL Processing')
     parser.add_argument('-i', '--input', type=str, required=True, help='Input file')
     parser.add_argument('-o', '--output', type=str, required=True, help='Output file')
-    parser.add_argument('-l', '--level', type=int, default=2, help='Level [1, 2 or 3]')
+    parser.add_argument('-l', '--level', type=int, default=2, help='Level')
     args = parser.parse_args()
 
     main(args.input, args.output, args.level)
