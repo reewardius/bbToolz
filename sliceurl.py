@@ -1,3 +1,5 @@
+# python sliceurl.py -i urls.txt -l 10 -o output.txt
+
 import argparse
 from urllib.parse import urlparse
 
