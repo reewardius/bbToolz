@@ -1,38 +1,36 @@
-# python parseJS.py -i input.txt
+# python parseJS.py -l js.txt
 
 import argparse
 import re
+import urllib.request
 
-def extract_links_from_file(file_path, regex_pattern):
+def extract_links_from_url(url, regex_pattern):
     try:
-        with open(file_path, 'r') as file:
-            file_content = file.read()
-            links = re.findall(regex_pattern, file_content)
-            return links
+        response = urllib.request.urlopen(url)
+        file_content = response.read().decode('utf-8')
+        links = re.findall(regex_pattern, file_content)
+        return links
     except Exception as e:
         print(f"An error occurred: {e}")
         return []
 
-def parse_files(input_file, regex_pattern):
-    with open(input_file, 'r') as file:
-        file_paths = file.readlines()
-
-    for file_path in file_paths:
-        file_path = file_path.strip()
-        found_links = extract_links_from_file(file_path, regex_pattern)
-        for link in found_links:
-            print(link)
-
 # Создаем парсер аргументов командной строки
-parser = argparse.ArgumentParser(description='JavaScript File Parser')
-parser.add_argument('-i', '--input', type=str, help='Input file containing file paths')
+parser = argparse.ArgumentParser(description='JavaScript URL Parser')
+parser.add_argument('-l', '--url_list', type=str, help='File containing URL list')
 args = parser.parse_args()
 
-# Проверяем наличие аргумента -i
-if not args.input:
-    print("Input file not specified. Please use the -i or --input argument to specify the input file.")
+# Проверяем наличие аргумента -l
+if not args.url_list:
+    print("URL list file not specified. Please use the -l or --url_list argument to specify the file.")
 else:
-    input_file = args.input
-    regex_pattern = r"s3\.amazonaws\.com|storage\.googleapis\.com|blob\.core\.windows\.net"
+    url_list_file = args.url_list
+    regex_pattern = r's3\.amazonaws\.com|storage\.googleapis\.com|blob\.core\.windows\.net'
 
-    parse_files(input_file, regex_pattern)
+    with open(url_list_file, 'r') as file:
+        urls = file.readlines()
+
+    for url in urls:
+        url = url.strip()
+        found_links = extract_links_from_url(url, regex_pattern)
+        for link in found_links:
+            print(link)
