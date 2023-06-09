@@ -2,7 +2,6 @@
 
 import argparse
 import re
-import urllib.request
 
 def extract_links_from_file(file_path, regex_pattern):
     try:
@@ -14,16 +13,15 @@ def extract_links_from_file(file_path, regex_pattern):
         print(f"An error occurred: {e}")
         return []
 
-def parse_files(input_file, output_file, regex_pattern):
+def parse_files(input_file, regex_pattern):
     with open(input_file, 'r') as file:
         file_paths = file.readlines()
 
-    with open(output_file, 'w') as file:
-        for file_path in file_paths:
-            file_path = file_path.strip()
-            found_links = extract_links_from_file(file_path, regex_pattern)
-            for link in found_links:
-                file.write(link + '\n')
+    for file_path in file_paths:
+        file_path = file_path.strip()
+        found_links = extract_links_from_file(file_path, regex_pattern)
+        for link in found_links:
+            print(link)
 
 # Создаем парсер аргументов командной строки
 parser = argparse.ArgumentParser(description='JavaScript File Parser')
@@ -35,7 +33,6 @@ if not args.input:
     print("Input file not specified. Please use the -i or --input argument to specify the input file.")
 else:
     input_file = args.input
-    output_file = "output.txt"
     regex_pattern = r"s3\.amazonaws\.com|storage\.googleapis\.com|blob\.core\.windows\.net"
 
-    parse_files(input_file, output_file, regex_pattern)
+    parse_files(input_file, regex_pattern)
