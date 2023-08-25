@@ -1,3 +1,5 @@
+# python combine.py.txt target.txt suffix.txt result.txt
+
 import sys
 
 def read_file(file_path):
