@@ -1,4 +1,4 @@
-# python combine.py.txt target.txt suffix.txt result.txt
+# python combine.py target.txt suffix.txt result.txt
 
 import sys
 
