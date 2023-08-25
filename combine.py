@@ -12,10 +12,10 @@ def write_file(file_path, content):
 def add_suffixes(targets, suffixes):
     result = []
     for target in targets:
-        target = target.strip()  # Удаляем символы новой строки и пробелы с обеих сторон
+        target = target.strip()
         if target:
             for suffix in suffixes:
-                result.append(target + suffix + '\n')  # Добавляем символ новой строки после суффикса
+                result.append(target + suffix + '\n')
     return result
 
 if __name__ == "__main__":
@@ -38,7 +38,16 @@ if __name__ == "__main__":
 
     modified_targets = add_suffixes(targets, suffixes)
     
-    # Объединяем строки и убираем пустые строки
-    modified_content = "".join(modified_targets).strip()
+    # Объединяем строки, добавляем переносы строк и сортируем
+    modified_content = "\n".join(sorted(modified_targets)).strip()
 
     write_file(output_file_path, modified_content)
+
+    # Открываем файл снова для удаления пустых строк
+    with open(output_file_path, 'r') as f:
+        lines = f.readlines()
+    non_empty_lines = filter(lambda line: line.strip(), lines)
+
+    # Записываем обратно в файл
+    with open(output_file_path, 'w') as f:
+        f.writelines(non_empty_lines)
