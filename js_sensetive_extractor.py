@@ -1,3 +1,4 @@
+import argparse
 import requests
 from termcolor import colored as cl
 
@@ -15,7 +16,12 @@ def extract(url):
         print(f"Error processing {url}: {e}")
 
 def main():
-    target_file = 'JS.txt'
+    parser = argparse.ArgumentParser(description='Extract sensitive data from URLs in a file.')
+    parser.add_argument('-l', '--file', required=True, help='Path to the file containing the list of URLs.')
+
+    args = parser.parse_args()
+    
+    target_file = args.file
     
     try:
         with open(target_file, 'r') as file:
