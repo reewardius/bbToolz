@@ -12,16 +12,18 @@
 
 import argparse
 from urllib.parse import urlparse
+import concurrent.futures
+
+def extract_path(url):
+    parsed_url = urlparse(url)
+    return parsed_url.path + '\n'
 
 def extract_paths(links_file, output_file):
-    with open(links_file, 'r') as file:
-        lines = file.readlines()
-        with open(output_file, 'w') as output:
-            for line in lines:
-                url = line.strip()
-                parsed_url = urlparse(url)
-                path = parsed_url.path
-                output.write(path + '\n')
+    with open(links_file, 'r') as file, open(output_file, 'w') as output:
+        urls = (line.strip() for line in file)
+        with concurrent.futures.ThreadPoolExecutor() as executor:
+            paths = executor.map(extract_path, urls)
+            output.writelines(paths)
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Extract paths from URLs')
@@ -33,3 +35,4 @@ if __name__ == "__main__":
         extract_paths(args.links, args.output)
     else:
         print("Please provide both input (-l) and output (-o) file paths.")
+
