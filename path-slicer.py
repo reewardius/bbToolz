@@ -10,9 +10,6 @@
 # /one_more_path
 # /just-one-segment
 
-
-
-
 import argparse
 from urllib.parse import urlparse
 
