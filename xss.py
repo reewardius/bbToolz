@@ -1,4 +1,4 @@
-# python xss.py -u input.txt -p payloads.txt -o out.txt
+# python xss.py -u input.txt -p knoxss-payloads.txt -o out.txt
 
 # The main task of this script is to take the URL from the file, the value of the parameter should be FUZZ, 
 # values from the file payloads.txt are substituted into it, all generated values should be opened through OpenMultipleUrls to check for those that worked.
