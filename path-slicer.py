@@ -1,38 +1,28 @@
-#python path-slicer.py -l input_file.txt -o output_file.txt
-
-# https://www.example.com/path/to/something
-# https://www.example.com/another/path/to/file.html
-# https://www.example.com/one_more_path
-# https://www.example.com/just-one-segment
-
-# /path/to/something
-# /another/path/to/file.html
-# /one_more_path
-# /just-one-segment
-
-import argparse
+import sys
 from urllib.parse import urlparse
-import concurrent.futures
 
-def extract_path(url):
+def extract_domain_and_paths(url):
     parsed_url = urlparse(url)
-    return parsed_url.path + '\n'
-
-def extract_paths(links_file, output_file):
-    with open(links_file, 'r') as file, open(output_file, 'w') as output:
-        urls = (line.strip() for line in file)
-        with concurrent.futures.ThreadPoolExecutor() as executor:
-            paths = executor.map(extract_path, urls)
-            output.writelines(paths)
+    domain = parsed_url.scheme + "://" + parsed_url.netloc
+    paths = parsed_url.path.split('/')[:2]
+    path = '/'.join(paths)
+    return domain + path
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description='Extract paths from URLs')
-    parser.add_argument('-l', '--links', type=str, help='Path to the file containing URLs')
-    parser.add_argument('-o', '--output', type=str, help='Output file to save paths')
-    args = parser.parse_args()
+    if len(sys.argv) < 3:
+        print("Usage: python script.py <input_file_with_urls> <output_file>")
+        sys.exit(1)
 
-    if args.links and args.output:
-        extract_paths(args.links, args.output)
-    else:
-        print("Please provide both input (-l) and output (-o) file paths.")
+    input_file = sys.argv[1]
+    output_file = sys.argv[2]
 
+    with open(input_file, "r") as file:
+        urls = file.readlines()
+
+    with open(output_file, "w") as file:
+        for url in urls:
+            url = url.strip()
+            result = extract_domain_and_paths(url)
+            file.write(result + "\n")
+
+    print("Results written to", output_file)
